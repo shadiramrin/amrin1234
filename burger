@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Burger Maker Game</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#ffb347,#ffcc33);
+    min-height:100vh;
+    text-align:center;
+}
+
+h1{
+    padding:20px;
+    color:white;
+    text-shadow:2px 2px 4px black;
+}
+
+.container{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:20px;
+    padding:20px;
+}
+
+.panel{
+    background:white;
+    border-radius:15px;
+    padding:20px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.3);
+}
+
+#burger{
+    width:250px;
+    min-height:350px;
+    display:flex;
+    flex-direction:column-reverse;
+    align-items:center;
+    border:3px dashed #999;
+    padding:10px;
+}
+
+.ingredient{
+    width:180px;
+    margin:2px;
+    border-radius:10px;
+}
+
+.bun-top{
+    background:#f5c16c;
+    height:40px;
+    border-radius:50px 50px 10px 10px;
+}
+
+.bun-bottom{
+    background:#e0a74f;
+    height:30px;
+}
+
+.patty{
+    background:#5c3317;
+    height:25px;
+}
+
+.cheese{
+    background:gold;
+    height:15px;
+}
+
+.lettuce{
+    background:limegreen;
+    height:15px;
+}
+
+.tomato{
+    background:red;
+    height:15px;
+}
+
+.buttons button{
+    margin:5px;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:16px;
+    background:#ff6b35;
+    color:white;
+}
+
+.buttons button:hover{
+    background:#e05524;
+}
+
+#message{
+    margin-top:15px;
+    font-size:20px;
+    font-weight:bold;
+}
+
+.score{
+    font-size:22px;
+    color:white;
+    margin-bottom:15px;
+}
+</style>
+</head>
+<body>
+
+<h1>🍔 Burger Maker Game</h1>
+
+<div class="score">
+Skor: <span id="score">0</span>
+</div>
+
+<div class="container">
+
+<div class="panel">
+<h2>Pesanan Pelanggan</h2>
+<p id="order"></p>
+</div>
+
+<div class="panel">
+<h2>Burger Anda</h2>
+<div id="burger"></div>
+</div>
+
+<div class="panel">
+<h2>Bahan</h2>
+
+<div class="buttons">
+<button onclick="addIngredient('bun-bottom')">🍞 Bun Bawah</button>
+<button onclick="addIngredient('patty')">🥩 Patty</button>
+<button onclick="addIngredient('cheese')">🧀 Cheese</button>
+<button onclick="addIngredient('lettuce')">🥬 Lettuce</button>
+<button onclick="addIngredient('tomato')">🍅 Tomato</button>
+<button onclick="addIngredient('bun-top')">🍞 Bun Atas</button>
+</div>
+
+<br>
+
+<button onclick="checkBurger()">✅ Hantar Burger</button>
+<button onclick="resetBurger()">🗑 Reset</button>
+
+<div id="message"></div>
+
+</div>
+
+</div>
+
+<script>
+const burger = document.getElementById("burger");
+const scoreText = document.getElementById("score");
+const orderText = document.getElementById("order");
+
+let score = 0;
+let playerBurger = [];
+
+const recipes = [
+["bun-bottom","patty","cheese","bun-top"],
+["bun-bottom","patty","lettuce","bun-top"],
+["bun-bottom","patty","tomato","bun-top"],
+["bun-bottom","patty","cheese","lettuce","bun-top"],
+["bun-bottom","patty","cheese","tomato","bun-top"]
+];
+
+let currentOrder = [];
+
+function newOrder(){
+
+    currentOrder =
+    recipes[Math.floor(Math.random()*recipes.length)];
+
+    orderText.innerHTML =
+    currentOrder.map(x=>emoji(x)).join(" ➝ ");
+
+}
+
+function emoji(item){
+
+    const icons = {
+        "bun-bottom":"🍞",
+        "patty":"🥩",
+        "cheese":"🧀",
+        "lettuce":"🥬",
+        "tomato":"🍅",
+        "bun-top":"🍞"
+    };
+
+    return icons[item];
+}
+
+function addIngredient(type){
+
+    playerBurger.push(type);
+
+    const div = document.createElement("div");
+    div.classList.add("ingredient");
+    div.classList.add(type);
+
+    burger.appendChild(div);
+}
+
+function resetBurger(){
+    playerBurger = [];
+    burger.innerHTML = "";
+    document.getElementById("message").innerHTML = "";
+}
+
+function checkBurger(){
+
+    const same =
+    JSON.stringify(playerBurger)
+    ===
+    JSON.stringify(currentOrder);
+
+    if(same){
+
+        score += 10;
+        scoreText.innerText = score;
+
+        document.getElementById("message").innerHTML =
+        "✅ Burger Betul! +10 Mata";
+
+        resetBurger();
+        newOrder();
+
+    }else{
+
+        document.getElementById("message").innerHTML =
+        "❌ Burger Salah!";
+    }
+
+}
+
+newOrder();
+</script>
+
+</body>
+</html>
